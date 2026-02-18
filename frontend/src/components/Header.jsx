@@ -1,9 +1,12 @@
-export default function Header({ compact = false }) {
+export default function Header({ compact = false, onGoHome }) {
   if (compact) {
     return (
       <header className="text-center py-4 px-4">
-        <h1 className="text-2xl font-black tracking-tight animate-pulse-fire">
-          Song Roast
+        <h1
+          onClick={onGoHome}
+          className="text-2xl font-black tracking-tight animate-pulse-fire cursor-pointer hover:opacity-80 transition-opacity"
+        >
+          &larr; Song Roast
         </h1>
       </header>
     );

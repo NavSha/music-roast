@@ -1,9 +1,10 @@
+import AudioPlayer from "./AudioPlayer";
 import ScoreGauge from "./ScoreGauge";
 import ReportSection from "./ReportSection";
 import ClicheCounter from "./ClicheCounter";
 import ActionBar from "./ActionBar";
 
-export default function RoastReport({ data, onReRoast, onReset }) {
+export default function RoastReport({ data, previewUrl, onReRoast, onReset }) {
   if (!data) return null;
 
   return (
@@ -17,6 +18,13 @@ export default function RoastReport({ data, onReRoast, onReset }) {
           {data.severity} roast
         </p>
       </div>
+
+      {/* Audio preview */}
+      {previewUrl && (
+        <div className="mb-4 animate-fade-in" style={{ animationDelay: "150ms" }}>
+          <AudioPlayer previewUrl={previewUrl} title={data.title} />
+        </div>
+      )}
 
       {/* Score — bounce-in with short delay */}
       <ScoreGauge score={data.overall_score} comment={data.overall_score_comment} delay={250} />

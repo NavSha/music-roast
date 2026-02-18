@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { streamRoast } from "../api";
+import { streamRoast, fetchPreviewUrl } from "../api";
 
 export function useRoast() {
   const [view, setView] = useState("pick"); // "pick" | "streaming" | "report"
@@ -26,15 +26,24 @@ export function useRoast() {
     accumulatorRef.current = "";
   }, []);
 
-  const startRoast = useCallback(async ({ artist, title, lyrics }) => {
+  const startRoast = useCallback(async ({ artist, title, lyrics, previewUrl }) => {
     // Abort any in-flight request
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
     abortRef.current = controller;
 
     setError(null);
-    setCurrentSong({ artist, title });
+    setCurrentSong({ artist, title, previewUrl: previewUrl || null });
     setStreamingText("");
+
+    // Fetch preview URL in parallel if not provided (searched songs)
+    if (!previewUrl) {
+      fetchPreviewUrl(artist, title).then((url) => {
+        if (!controller.signal.aborted) {
+          setCurrentSong((prev) => prev && { ...prev, previewUrl: url });
+        }
+      });
+    }
     accumulatorRef.current = "";
     setView("streaming");
 

@@ -1,6 +1,8 @@
 import json
 import os
 import time
+import urllib.parse
+import httpx
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -62,6 +64,24 @@ def search():
         return jsonify(results)
     except RuntimeError as e:
         return jsonify({"error": str(e)}), 502
+
+
+@app.route("/api/preview")
+def preview():
+    artist = request.args.get("artist", "").strip()
+    title = request.args.get("title", "").strip()
+    if not artist or not title:
+        return jsonify({"previewUrl": None})
+    try:
+        query = urllib.parse.quote(f"{artist} {title}")
+        url = f"https://itunes.apple.com/search?term={query}&entity=song&limit=1"
+        resp = httpx.get(url, timeout=5)
+        data = resp.json()
+        results = data.get("results", [])
+        preview_url = results[0].get("previewUrl") if results else None
+        return jsonify({"previewUrl": preview_url})
+    except Exception:
+        return jsonify({"previewUrl": None})
 
 
 @app.route("/api/roast", methods=["POST"])

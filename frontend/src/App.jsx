@@ -35,7 +35,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen">
-      <Header compact={view !== "pick"} />
+      <Header compact={view !== "pick"} onGoHome={view !== "pick" ? reset : undefined} />
 
       <ErrorDisplay message={error} onDismiss={() => setError(null)} />
 
@@ -43,7 +43,7 @@ export default function App() {
         <SongPicker
           severity={severity}
           onSeverityChange={setSeverity}
-          onSelectSong={(song) => startRoast({ artist: song.artist, title: song.title })}
+          onSelectSong={(song) => startRoast({ artist: song.artist, title: song.title, previewUrl: song.previewUrl })}
         />
       )}
 
@@ -54,6 +54,7 @@ export default function App() {
       {view === "report" && (
         <RoastReport
           data={roastData}
+          previewUrl={currentSong?.previewUrl}
           onReRoast={reRoast}
           onReset={reset}
         />

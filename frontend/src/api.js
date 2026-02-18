@@ -19,6 +19,17 @@ export async function fetchPopularSongs() {
   return resp.json();
 }
 
+export async function fetchPreviewUrl(artist, title) {
+  try {
+    const params = new URLSearchParams({ artist, title });
+    const resp = await fetch(`${API_BASE}/preview?${params}`);
+    const data = await resp.json();
+    return data.previewUrl || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function submitRoast({ artist, title, severity, lyrics }) {
   const resp = await fetch(`${API_BASE}/roast`, {
     method: "POST",

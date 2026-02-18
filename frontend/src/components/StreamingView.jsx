@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import AudioPlayer from "./AudioPlayer";
 
 function extractRoastText(raw) {
   // Look for "the_roast": " in the accumulated JSON stream
@@ -55,9 +56,15 @@ export default function StreamingView({ streamingText, song, onAbort }) {
         </p>
       )}
       {song?.artist && (
-        <p className="text-text-secondary mb-6 animate-fade-in-up stagger-1">
+        <p className="text-text-secondary mb-4 animate-fade-in-up stagger-1">
           by {song.artist}
         </p>
+      )}
+
+      {song?.previewUrl && (
+        <div className="mb-6 animate-fade-in-up stagger-2">
+          <AudioPlayer previewUrl={song.previewUrl} title={song.title} />
+        </div>
       )}
 
       {isWaiting ? (
